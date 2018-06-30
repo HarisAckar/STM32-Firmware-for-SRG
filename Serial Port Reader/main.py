@@ -1,3 +1,4 @@
+# Author: Haris Ackar
 import sys
 import serial
 import time
