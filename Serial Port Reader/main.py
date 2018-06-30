@@ -5,6 +5,8 @@ import time
 import os
 import serial.tools.list_ports;
 import signal
+import glob
+import datetime
 
 
 def signalHandler(signal, frame):
@@ -48,6 +50,12 @@ def openSerialPort(serialPort, baudRate):
 
     if sp.isOpen():
         print "Serial port: " + serialPort + ", Baud Rate: " + str(baudRate) + ":"
+        listOfFiles = glob.glob("*.txt")
+        fileName = "serialdata-" + str(datetime.datetime.now().strftime("%Y-%m-%d"))
+        for lst in listOfFiles:
+            if fileName in lst:
+                fileName = fileName + "(1)"
+        file = open(fileName, "a")
         try:
             sp.flushInput()
             sp.flushOutput()
@@ -56,6 +64,7 @@ def openSerialPort(serialPort, baudRate):
                 received = sp.readline()
                 if received and received.strip():
                     print received
+                    file.write(received + "\r\n")
         except Exception, e:
             print "Error: " + str(e)
     else:
@@ -72,7 +81,6 @@ def parseBaudRate(string):
 
 def main(argv):
     serialPort = ''
-    baudRate = ''
     if len(argv) == 1:
         print "Not enough input arguments"
         sys.exit()
