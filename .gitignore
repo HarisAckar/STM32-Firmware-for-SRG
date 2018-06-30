@@ -5,6 +5,8 @@ RemoteSystemsTempFiles/\.project
 
 SRG/\.settings/language\.settings\.xml
 
+SRG/Debug
+
 SRG/Debug/SRG\.elf
 
 SRG/Debug/StdPeriph_Driver/src/misc\.d
@@ -128,3 +130,5 @@ SRG/Debug/StdPeriph_Driver/src/stm32f4xx_lptim\.o
 *.map
 
 *.d
+
+\.gitignore~
