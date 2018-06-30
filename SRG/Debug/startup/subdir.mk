@@ -15,7 +15,7 @@ startup/%.o: ../startup/%.s
 	@echo 'Building file: $<'
 	@echo 'Invoking: MCU GCC Assembler'
 	@echo $(PWD)
-	arm-none-eabi-as -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 -I"/home/haris/Dropbox/Private/SRG-SciP/STM32 Firmware for SRG/SRG/StdPeriph_Driver/inc" -I"/home/haris/Dropbox/Private/SRG-SciP/STM32 Firmware for SRG/SRG/inc" -I"/home/haris/Dropbox/Private/SRG-SciP/STM32 Firmware for SRG/SRG/CMSIS/device" -I"/home/haris/Dropbox/Private/SRG-SciP/STM32 Firmware for SRG/SRG/CMSIS/core" -g -o "$@" "$<"
+	arm-none-eabi-as -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 -I"/home/haris/Dropbox/Private/SRG-SciP/STM32F4 Firmware for SRG/STM32-Firmware-for-SRG/SRG/StdPeriph_Driver/inc" -I"/home/haris/Dropbox/Private/SRG-SciP/STM32F4 Firmware for SRG/STM32-Firmware-for-SRG/SRG/inc" -I"/home/haris/Dropbox/Private/SRG-SciP/STM32F4 Firmware for SRG/STM32-Firmware-for-SRG/SRG/CMSIS/device" -I"/home/haris/Dropbox/Private/SRG-SciP/STM32F4 Firmware for SRG/STM32-Firmware-for-SRG/SRG/CMSIS/core" -g -o "$@" "$<"
 	@echo 'Finished building: $<'
 	@echo ' '
 

@@ -31,10 +31,10 @@ endif
 all: SRG.elf
 
 # Tool invocations
-SRG.elf: $(OBJS) $(USER_OBJS) /home/haris/Dropbox/Private/SRG-SciP/STM32\ Firmware\ for\ SRG/SRG/LinkerScript.ld
+SRG.elf: $(OBJS) $(USER_OBJS) /home/haris/Dropbox/Private/SRG-SciP/STM32F4\ Firmware\ for\ SRG/STM32-Firmware-for-SRG/SRG/LinkerScript.ld
 	@echo 'Building target: $@'
 	@echo 'Invoking: MCU GCC Linker'
-	arm-none-eabi-gcc -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 -T"/home/haris/Dropbox/Private/SRG-SciP/STM32 Firmware for SRG/SRG/LinkerScript.ld" -Wl,-Map=output.map -Wl,--gc-sections -o "SRG.elf" @"objects.list" $(USER_OBJS) $(LIBS) -lm
+	arm-none-eabi-gcc -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 -T"/home/haris/Dropbox/Private/SRG-SciP/STM32F4 Firmware for SRG/STM32-Firmware-for-SRG/SRG/LinkerScript.ld" -Wl,-Map=output.map -Wl,--gc-sections -o "SRG.elf" @"objects.list" $(USER_OBJS) $(LIBS) -lm
 	@echo 'Finished building target: $@'
 	@echo ' '
 	$(MAKE) --no-print-directory post-build
