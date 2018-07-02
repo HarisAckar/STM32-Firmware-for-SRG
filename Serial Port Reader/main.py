@@ -3,7 +3,7 @@ import sys
 import serial
 import time
 import os
-import serial.tools.list_ports;
+import serial.tools.list_ports
 import signal
 import glob
 import datetime
