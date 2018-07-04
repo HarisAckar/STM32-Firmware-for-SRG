@@ -1,5 +1,4 @@
 # Author: Haris Ackar
-# TODO
 import sys
 import serial
 import time
