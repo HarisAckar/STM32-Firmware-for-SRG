@@ -89,7 +89,7 @@ def main(argv):
             print "$main.py -i <serialPort> -i <baudRate> #for reading from Serial Port"
             print "$main.py -l #for list of all available Serial Ports"
             print "$main.py -h #for help"
-            sys.exit();
+            sys.exit()
         elif argv[1] == "-l":
             print(listOfAvailableSerialPorts())
             sys.exit()
