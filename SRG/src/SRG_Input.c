@@ -65,29 +65,29 @@ void SpeedCounter_Init(void){
 }
 
 static void calculateTIMValues(void){
-	TIMOnePulse.TIM_Pulse = (angles.onAngle * TIMOnePulse.T)/(60480); //This is OK!!
-	TIMOnePulse.TIM_Period = (angles.offAngle * TIMOnePulse.T)/(60480);
-	print("%d", TIMOnePulse.TIM_Period);
-	print("\r\n%d\r\n", TIMOnePulse.TIM_Pulse);
-	RCC_ClocksTypeDef RCC_Clocks;
-	RCC_GetClocksFreq(&RCC_Clocks);
-	//koji preskaler treba biti da bi od ivice do ivice stalo 65535 impulsa????
-	uint16_t PrescalerValue = (uint16_t)(RCC_Clocks.PCLK1_Frequency * 2);
+	uint16_t PrescalerValue = (uint16_t)(TIMOnePulse.Counter / 65535) - 1;
+	TIMOnePulse.TIM_Pulse = angles.onAngle * 65535/45;
+	TIMOnePulse.TIM_Period = angles.offAngle * 65535/45;
+	TIMOnePulse.TIM_Prescaler = PrescalerValue;
 }
 
 /***
  * External Interrupt handler for Speed Meter
  */
+static uint32_t oldSpeed = 0;
 void EXTI4_IRQHandler(void){
 	if(EXTI_GetITStatus(EXTI_Line4) != RESET){
 		ToggleOrange();
 		uint32_t counter = TIM_GetCounter(TIM5);
 		TIM_SetCounter(TIM5, 0);
-		uint32_t RPM = TIM5_FREQ * 15 / (counter * 2);
-		print("!SSpeed in RPM: %d\r\n", RPM);
-		TIMOnePulse.T = counter; // update period for pulses
-		calculateTIMValues();
-		updateTimers();
+		uint32_t speedRPM = TIM5_FREQ * 15 / (counter * 2);
+		print("!SSpeed in RPM: %d\r\n", speedRPM);
+		if(oldSpeed != speedRPM){
+			TIMOnePulse.Counter = counter; // update period for pulses
+			calculateTIMValues();
+			updateTimers();
+		}
 		EXTI_ClearITPendingBit(EXTI_Line4);
+		oldSpeed = speedRPM;
 	}
 }

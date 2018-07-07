@@ -14,7 +14,7 @@ typedef struct {
 	uint32_t TIM_Period;
 	uint32_t TIM_Prescaler;
 	uint32_t TIM_Pulse;
-	uint32_t T;
+	uint32_t Counter;
 }OnePulseSettings;
 
 typedef struct {

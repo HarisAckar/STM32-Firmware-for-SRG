@@ -118,7 +118,7 @@ static void ParseMessage(void){
 			if(USART3_Buffers.RXBuffer[2] == 'N'){//ON Angle
 				uint8_t tmp = getAngle();
 				if(tmp > 45 && tmp < 0){
-					print("!SInvalid angle value!");
+					print("!S%d\r\n", IAV);
 				}
 				else{
 					angles.onAngle = tmp;
@@ -127,22 +127,22 @@ static void ParseMessage(void){
 			else if(USART3_Buffers.RXBuffer[2] == 'F'){//OFF Angle
 				uint8_t tmp = getAngle();
 				if(tmp > 45 && tmp < 0){
-					print("!SInvalid angle value!");
+					print("!S%d\r\n", IAV);
 				}
 				else{
 					angles.offAngle = tmp;
 				}
 			}
 			else {
-				print("!SWrong argument for angle type!");
+				print("!S%d\r\n", WAAT);
 			}
 		}
 		else{
-			print("!SWrong message type! (expected '!A' message type)");
+			print("!S%d\r\n", WMT);
 		}
 	}
 	else {
-		print("!SError: Message to long!");
+		print("!S%d\r\n", MTL);
 	}
 	USART3_Buffers.RXCounter = 0;
 }

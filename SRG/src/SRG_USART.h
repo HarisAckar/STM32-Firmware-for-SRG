@@ -19,6 +19,12 @@
 #define NODTR 64
 #define NODTW 64
 
+// Parse Message errors
+#define IAV 0x01 //Invalid angle value
+#define WAAT 0x02 //Wrong argument for angle type
+#define WMT 0x03 //Wrong message type (expected '!A' message type)
+#define MTL 0x04 // Message too long
+
 #define MAX_TIMEOUT 100000
 
 typedef enum { FALSE = 0, TRUE = !FALSE} Bool;

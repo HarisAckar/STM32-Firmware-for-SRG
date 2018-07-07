@@ -14,15 +14,6 @@ OnePulseSettings TIMOnePulse;
 
 static void updateTimer(TIM_TypeDef* TIMx);
 
-/**
- * ReadMe:
- * Ton = thetaON/45 * T; thetaON = (0 - 45)
- * Tof = thetaOFF/45 * T
- * T = counter * TIM5_Freq
- * TIM_Pulse = Ton/TIMx_CLK
- * TIM_Period = Toff*TIMx_CLK
- */
-
 /***
  * Timer 2 Initialization
  */
@@ -41,23 +32,9 @@ void Timer2_Init(void){
 	GPIO_PinAFConfig(GPIOA, GPIO_PinSource0, GPIO_AF_TIM2);
 	GPIO_PinAFConfig(GPIOA, GPIO_PinSource1, GPIO_AF_TIM2);
 
-	/* TIM2 OnePulse Mode (initial values, will be changed through firmware)
-	 * External signal is connected to TIM2_CH2 pin (PA1)
-	 * The Rising edge is used as active edge
-	 * The One Pulse signal is output on TIM2_CH1 pin (PA0)
-	 * The TIM_Pulse defines the delay value
-	 * The (TIM_Period - TIM_Pulse) defines the One Pulse value
-	 * TIM2CLK = 42MHz, we want to get TIM2 counter clock at 16MHz:
-	 * - Prescaler = (TIM2CLK / TIM2 counter clock) - 1
-	 * The Autoreload is 65535, maximum frequency value to trigger the
-	 * TIM2 input is 16000000/65535 = 244.144Hz
-	 * The delay time is defined by TIM_Pulse: 16383/16000000 = 1.023ms
-	 * One Pulse Value = (TIM_Period - TIM_Pulse) / TIM2 counter clock = 3.072ms
-	 * */
-	// Time Base configuration
 	RCC_ClocksTypeDef RCC_Clocks;
 	RCC_GetClocksFreq(&RCC_Clocks);
-	uint16_t PrescalerValue = (uint16_t)(RCC_Clocks.PCLK1_Frequency / 31250) - 1;
+	uint16_t PrescalerValue = 65535;
 	TIMOnePulse.TIM_Prescaler = PrescalerValue;
 	updateTimer(TIM2);
 }
@@ -80,7 +57,7 @@ void Timer3_Init(void){
 	// Time Base configuration
 	RCC_ClocksTypeDef RCC_Clocks;
 	RCC_GetClocksFreq(&RCC_Clocks);
-	uint16_t PrescalerValue = (uint16_t)(RCC_Clocks.PCLK1_Frequency / 31250) - 1;
+	uint16_t PrescalerValue = 65535;
 	TIMOnePulse.TIM_Prescaler = PrescalerValue;
 	updateTimer(TIM3);
 }
@@ -103,7 +80,7 @@ void Timer4_Init(void){
 
 	RCC_ClocksTypeDef RCC_Clocks;
 	RCC_GetClocksFreq(&RCC_Clocks);
-	uint16_t PrescalerValue = (uint16_t)(RCC_Clocks.PCLK1_Frequency / 31250) - 1;
+	uint16_t PrescalerValue = 65535;
 	TIMOnePulse.TIM_Prescaler = PrescalerValue;
 	updateTimer(TIM4);
 }
@@ -118,6 +95,8 @@ void updateTimers(void){
 	updateTimer(TIM4);
 }
 
+//TODO:
+//1. check for work if we update only TIM_TBStruct and TIM_OCInitStruct
 static void updateTimer(TIM_TypeDef* TIMx){
 	TIM_DeInit(TIMx);
 	TIM_TimeBaseInitTypeDef TIM_TBStruct;
