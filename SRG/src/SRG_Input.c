@@ -8,10 +8,14 @@
 #include <stdint.h>
 #include "SRG_Input.h"
 #include "SRG_USART.h"
+#include "SRG_Timers.h"
 #include "LED.h"
 #include "stm32f4xx_gpio.h"
 #include "stm32f4xx_tim.h"
 #include "stm32f4xx_rcc.h"
+
+OnePulseSettings TIMOnePulse;
+Angles angles;
 
 /***
  * External Interrupt and NVIC Initialization
@@ -60,6 +64,17 @@ void SpeedCounter_Init(void){
 	TIM_SetCounter(TIM5, 0);
 }
 
+static void calculateTIMValues(void){
+	TIMOnePulse.TIM_Pulse = (angles.onAngle * TIMOnePulse.T)/(60480); //This is OK!!
+	TIMOnePulse.TIM_Period = (angles.offAngle * TIMOnePulse.T)/(60480);
+	print("%d", TIMOnePulse.TIM_Period);
+	print("\r\n%d\r\n", TIMOnePulse.TIM_Pulse);
+	RCC_ClocksTypeDef RCC_Clocks;
+	RCC_GetClocksFreq(&RCC_Clocks);
+	//koji preskaler treba biti da bi od ivice do ivice stalo 65535 impulsa????
+	uint16_t PrescalerValue = (uint16_t)(RCC_Clocks.PCLK1_Frequency * 2);
+}
+
 /***
  * External Interrupt handler for Speed Meter
  */
@@ -70,7 +85,9 @@ void EXTI4_IRQHandler(void){
 		TIM_SetCounter(TIM5, 0);
 		uint32_t RPM = TIM5_FREQ * 15 / (counter * 2);
 		print("!SSpeed in RPM: %d\r\n", RPM);
-		//update global speed
+		TIMOnePulse.T = counter; // update period for pulses
+		calculateTIMValues();
+		updateTimers();
 		EXTI_ClearITPendingBit(EXTI_Line4);
 	}
 }

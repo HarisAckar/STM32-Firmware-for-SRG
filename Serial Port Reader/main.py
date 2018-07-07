@@ -8,7 +8,6 @@ import signal
 import glob
 import datetime
 
-
 def signalHandler(signal, frame):
     sys.exit()
 

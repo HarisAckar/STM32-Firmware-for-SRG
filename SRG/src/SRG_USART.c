@@ -7,15 +7,18 @@
 
 #include <stdint.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <stdarg.h>
 #include <misc.h>
 #include "SRG_USART.h"
+#include "SRG_Timers.h"
 #include "stm32f4xx_rcc.h"
 #include "stm32f4xx_usart.h"
 #include "stm32f4xx_gpio.h"
 #include "LED.h"
 
 Buffers USART3_Buffers;
+Angles angles;
 
 static void USART3_SendString(void);
 
@@ -24,7 +27,7 @@ static void USART3_SendString(void);
  * BaudRate = 115200;
  * NoHW Flow Control
  * Stop bits 1
- * USB-Serial Cavle-F (Olimex): GND = BLUE; RX = GREEN; TX = RED;
+ * USB-Serial Cable-F (Olimex): GND = BLUE; RX = GREEN; TX = RED;
  */
 void USART3_Init(void){
 	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOD, ENABLE); //Enable GPIOD peripheral clock
@@ -93,11 +96,55 @@ void USART3_Init(void){
 	USART3_Buffers.TXCounter = 0;
 }
 
+/**
+ * Helper function
+ * Used in ParseMessage
+ */
+static uint8_t getAngle(void){
+	uint8_t i = 0;
+	char str[10];
+	for(i = 3; i < USART3_Buffers.RXCounter; i++){
+		str[i-3] = USART3_Buffers.RXBuffer[i];
+	}
+	return atoi(str);
+}
+
 /***
  * Function for Parsing incoming message
  */
 static void ParseMessage(void){
-	//need to be implemented
+	if(USART3_Buffers.RXCounter < 10){
+		if(USART3_Buffers.RXBuffer[0] == '!' && USART3_Buffers.RXBuffer[1] == 'A'){
+			if(USART3_Buffers.RXBuffer[2] == 'N'){//ON Angle
+				uint8_t tmp = getAngle();
+				if(tmp > 45 && tmp < 0){
+					print("!SInvalid angle value!");
+				}
+				else{
+					angles.onAngle = tmp;
+				}
+			}
+			else if(USART3_Buffers.RXBuffer[2] == 'F'){//OFF Angle
+				uint8_t tmp = getAngle();
+				if(tmp > 45 && tmp < 0){
+					print("!SInvalid angle value!");
+				}
+				else{
+					angles.offAngle = tmp;
+				}
+			}
+			else {
+				print("!SWrong argument for angle type!");
+			}
+		}
+		else{
+			print("!SWrong message type! (expected '!A' message type)");
+		}
+	}
+	else {
+		print("!SError: Message to long!");
+	}
+	USART3_Buffers.RXCounter = 0;
 }
 
 /***
@@ -107,7 +154,7 @@ void USART3_IRQHandler(void){
 	if(USART_GetITStatus(USART3, USART_IT_RXNE) != RESET){
 		USART_ClearITPendingBit(USART3, USART_IT_RXNE);
 		USART3_Buffers.RXBuffer[USART3_Buffers.RXCounter++] = USART_ReceiveData(USART3);
-		if(USART3_Buffers.RXBuffer[USART3_Buffers.RXCounter - 1] == '\n'){ //Received end of Message
+		if(USART3_Buffers.RXBuffer[USART3_Buffers.RXCounter - 1] == '\r'){ //Received end of Message
 			ParseMessage();
 		}
 		if(USART3_Buffers.RXCounter == NODTR){ //if buffer is full stop interrupts

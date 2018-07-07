@@ -14,6 +14,15 @@ OnePulseSettings TIMOnePulse;
 
 static void updateTimer(TIM_TypeDef* TIMx);
 
+/**
+ * ReadMe:
+ * Ton = thetaON/45 * T; thetaON = (0 - 45)
+ * Tof = thetaOFF/45 * T
+ * T = counter * TIM5_Freq
+ * TIM_Pulse = Ton/TIMx_CLK
+ * TIM_Period = Toff*TIMx_CLK
+ */
+
 /***
  * Timer 2 Initialization
  */
@@ -46,7 +55,9 @@ void Timer2_Init(void){
 	 * One Pulse Value = (TIM_Period - TIM_Pulse) / TIM2 counter clock = 3.072ms
 	 * */
 	// Time Base configuration
-	uint16_t PrescalerValue = (uint16_t)(42000000 / 16000000) - 1;
+	RCC_ClocksTypeDef RCC_Clocks;
+	RCC_GetClocksFreq(&RCC_Clocks);
+	uint16_t PrescalerValue = (uint16_t)(RCC_Clocks.PCLK1_Frequency / 31250) - 1;
 	TIMOnePulse.TIM_Prescaler = PrescalerValue;
 	updateTimer(TIM2);
 }
@@ -55,6 +66,7 @@ void Timer2_Init(void){
  * Timer 3 Initialization
  */
 void Timer3_Init(void){
+	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM3, ENABLE);
 	GPIO_InitTypeDef GPIO_InitStruct;
 	GPIO_InitStruct.GPIO_Pin = GPIO_Pin_6 | GPIO_Pin_7;
 	GPIO_InitStruct.GPIO_Mode = GPIO_Mode_AF;
@@ -66,7 +78,9 @@ void Timer3_Init(void){
 	GPIO_PinAFConfig(GPIOA, GPIO_PinSource7, GPIO_AF_TIM3);
 
 	// Time Base configuration
-	uint16_t PrescalerValue = (uint16_t)(42000000 / 16000000) - 1;
+	RCC_ClocksTypeDef RCC_Clocks;
+	RCC_GetClocksFreq(&RCC_Clocks);
+	uint16_t PrescalerValue = (uint16_t)(RCC_Clocks.PCLK1_Frequency / 31250) - 1;
 	TIMOnePulse.TIM_Prescaler = PrescalerValue;
 	updateTimer(TIM3);
 }
@@ -75,6 +89,7 @@ void Timer3_Init(void){
  * Timer 4 Initialization
  */
 void Timer4_Init(void){
+	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM4, ENABLE);
 	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
 	GPIO_InitTypeDef GPIO_InitStruct;
 	GPIO_InitStruct.GPIO_Pin = GPIO_Pin_6 | GPIO_Pin_7;
@@ -82,11 +97,13 @@ void Timer4_Init(void){
 	GPIO_InitStruct.GPIO_OType = GPIO_OType_PP;
 	GPIO_InitStruct.GPIO_PuPd = GPIO_PuPd_UP;
 	GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
-	GPIO_Init(GPIOA, &GPIO_InitStruct);
+	GPIO_Init(GPIOB, &GPIO_InitStruct);
 	GPIO_PinAFConfig(GPIOB, GPIO_PinSource6, GPIO_AF_TIM4);
 	GPIO_PinAFConfig(GPIOB, GPIO_PinSource7, GPIO_AF_TIM4);
 
-	uint16_t PrescalerValue = (uint16_t)(42000000 / 16000000) - 1;
+	RCC_ClocksTypeDef RCC_Clocks;
+	RCC_GetClocksFreq(&RCC_Clocks);
+	uint16_t PrescalerValue = (uint16_t)(RCC_Clocks.PCLK1_Frequency / 31250) - 1;
 	TIMOnePulse.TIM_Prescaler = PrescalerValue;
 	updateTimer(TIM4);
 }

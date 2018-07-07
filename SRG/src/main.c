@@ -18,6 +18,7 @@
 #include "delay.h"
 
 OnePulseSettings TIMOnePulse;
+Angles angles;
 
 
 /***
@@ -68,8 +69,11 @@ int main(void)
 	TIM12_Start();
 	print("!SUser Delay Initialized\r\n");
 
-	//TIMOnePulse.TIM_Period = 65535;
-	//TIMOnePulse.TIM_Pulse = 16383;
+	TIMOnePulse.TIM_Period = 65535;
+	TIMOnePulse.TIM_Pulse = 16383;
+
+	angles.onAngle = 20;
+	angles.offAngle = 30;
 
 	// Timer 2 Initialization
 	Timer2_Init();

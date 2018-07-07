@@ -132,3 +132,5 @@ SRG/Debug/StdPeriph_Driver/src/stm32f4xx_lptim\.o
 *.d
 
 \.gitignore~
+
+\.metadata/
