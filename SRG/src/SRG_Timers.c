@@ -12,6 +12,7 @@
 
 OnePulseSettings TIMOnePulse;
 
+static void initTimer(TIM_TypeDef* TIMx);
 static void updateTimer(TIM_TypeDef* TIMx);
 
 /***
@@ -36,7 +37,7 @@ void Timer2_Init(void){
 	RCC_GetClocksFreq(&RCC_Clocks);
 	uint16_t PrescalerValue = 65535;
 	TIMOnePulse.TIM_Prescaler = PrescalerValue;
-	updateTimer(TIM2);
+	initTimer(TIM2);
 }
 
 /***
@@ -59,7 +60,7 @@ void Timer3_Init(void){
 	RCC_GetClocksFreq(&RCC_Clocks);
 	uint16_t PrescalerValue = 65535;
 	TIMOnePulse.TIM_Prescaler = PrescalerValue;
-	updateTimer(TIM3);
+	initTimer(TIM3);
 }
 
 /***
@@ -82,7 +83,7 @@ void Timer4_Init(void){
 	RCC_GetClocksFreq(&RCC_Clocks);
 	uint16_t PrescalerValue = 65535;
 	TIMOnePulse.TIM_Prescaler = PrescalerValue;
-	updateTimer(TIM4);
+	initTimer(TIM4);
 }
 
 /***
@@ -95,9 +96,23 @@ void updateTimers(void){
 	updateTimer(TIM4);
 }
 
-//TODO:
-//1. check for work if we update only TIM_TBStruct and TIM_OCInitStruct
 static void updateTimer(TIM_TypeDef* TIMx){
+	TIM_TimeBaseInitTypeDef TIM_TBStruct;
+	TIM_OCInitTypeDef TIM_OCInitStruct;
+	TIM_TBStruct.TIM_Period = TIMOnePulse.TIM_Period;
+	TIM_TBStruct.TIM_Prescaler = TIMOnePulse.TIM_Prescaler;
+	TIM_OCInitStruct.TIM_Pulse = TIMOnePulse.TIM_Pulse;
+	TIM_TBStruct.TIM_ClockDivision = 0;
+	TIM_TBStruct.TIM_CounterMode = TIM_CounterMode_Up;
+	TIM_TimeBaseInit(TIMx, &TIM_TBStruct);
+	TIM_OCInitStruct.TIM_OCMode = TIM_OCMode_PWM2;
+	TIM_OCInitStruct.TIM_OutputState = TIM_OutputState_Enable;
+	TIM_OCInitStruct.TIM_OCPolarity = TIM_OCPolarity_High;
+	TIM_OC1Init(TIMx, &TIM_OCInitStruct);
+}
+
+
+static void initTimer(TIM_TypeDef* TIMx){
 	TIM_DeInit(TIMx);
 	TIM_TimeBaseInitTypeDef TIM_TBStruct;
 	TIM_ICInitTypeDef TIM_ICInitStruct;

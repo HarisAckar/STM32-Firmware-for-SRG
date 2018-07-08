@@ -20,6 +20,16 @@
 OnePulseSettings TIMOnePulse;
 Angles angles;
 
+#define FCMI 0x10
+#define USART_INIT 0x20
+#define LED_INIT 0x30
+#define UDI 0x40
+#define TIM2_INIT 0x50
+#define TIM3_INIT 0x60
+#define TIM4_INIT 0x70
+#define EXTI_INIT 0x80
+#define SM_INIT 0x90
+
 
 /***
  * High Speed External Oscilator (HSE) = 8MHz
@@ -51,6 +61,18 @@ void setFastClockMode(void){
 
 int main(void)
 {
+	/**
+	 * Initial values for period, pulse and on/off angles
+	 */
+	TIMOnePulse.TIM_Period = 65535;
+	TIMOnePulse.TIM_Pulse = 16383;
+
+	angles.onAngle = 10;
+	angles.offAngle = 22.5;
+	/**
+	 * Initial values for period, pulse and on/off angles
+	 */
+
 	// "!S" Service message for APP
 	// Setting fast clock mode
 	setFastClockMode();
@@ -58,42 +80,36 @@ int main(void)
 	// USART3 Initialization
 	USART3_Init();
 	print("-----> Program is starting <-----\r\n");
-	print("!SFast Clock Mode Initialized\r\n");
-	print("!SUSART Initialized\r\n");
+	print("!S%d\r\n", FCMI);
+	print("!S%d\r\n", USART_INIT);
 
 	// Debug LEDs initialization
 	LED_Init();
-	print("!SDebug LEDs Initialized\r\n");
+	print("!S%d\r\n", LED_INIT);
 
 	// Start Timer for User delay
 	TIM12_Start();
-	print("!SUser Delay Initialized\r\n");
-
-	TIMOnePulse.TIM_Period = 65535;
-	TIMOnePulse.TIM_Pulse = 16383;
-
-	angles.onAngle = 20;
-	angles.offAngle = 30;
+	print("!S%d\r\n", UDI);
 
 	// Timer 2 Initialization
 	Timer2_Init();
-	print("!STimer 2 Initialized\r\n");
+	print("!S%d\r\n", TIM2_INIT);
 
 	// Timer 3 Initialization
 	Timer3_Init();
-	print("!STimer 3 Initialized\r\n");
+	print("!S%d\r\n", TIM3_INIT);
 
 	// Timer 4 Initialization
 	Timer4_Init();
-	print("!STimer4 Initialized\r\n");
+	print("!S%d\r\n", TIM4_INIT);
 
 	//EXTI Interrupt Initialization
 	Input_EXTI_Init();
-	print("!SInput EXTI Initialized\r\n");
+	print("!S%d\r\n", EXTI_INIT);
 
 	//Speed Meter Initialization
 	SpeedCounter_Init();
-	print("!SSpeed Meter Initialized\r\n");
+	print("!S%d\r\n", SM_INIT);
 
 
 	while(1){
