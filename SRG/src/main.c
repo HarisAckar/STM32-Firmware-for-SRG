@@ -112,9 +112,6 @@ int main(void)
 	SpeedCounter_Init();
 	print("!S%d\r\n", SM_INIT);
 
-	initPeriodicADC();
-
-
 	while(1){
 
 	}

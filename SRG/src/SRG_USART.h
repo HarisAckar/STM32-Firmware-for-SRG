@@ -24,6 +24,7 @@
 #define WAAT 0x02 //Wrong argument for angle type
 #define WMT 0x03 //Wrong message type (expected '!A' message type)
 #define MTL 0x04 // Message too long
+#define WAADC 0x05 //Wrong argument for ADC
 
 #define MAX_TIMEOUT 100000
 

@@ -63,6 +63,11 @@ void initPeriodicADC(void){
 
 }
 
+void deInitPeriodicADC(void){
+	TIM_DeInit(TIM5);
+	ADC_DeInit(ADC1);
+}
+
 void TIM5_IRQHandler(void){
 	if(TIM_GetITStatus(TIM5, TIM_IT_Update) != RESET){
 		ADC_SoftwareStartConv(ADC1);

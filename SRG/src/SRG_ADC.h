@@ -9,7 +9,7 @@
 #define SRG_ADC_H_
 
 void initPeriodicADC(void);
-
+void deInitPeriodicADC(void);
 void TIM5_IRQHandler(void);
 
 #endif /* SRG_ADC_H_ */

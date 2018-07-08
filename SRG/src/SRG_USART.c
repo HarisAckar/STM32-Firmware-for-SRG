@@ -16,6 +16,7 @@
 #include "stm32f4xx_usart.h"
 #include "stm32f4xx_gpio.h"
 #include "LED.h"
+#include "SRG_ADC.h"
 
 Buffers USART3_Buffers;
 Angles angles;
@@ -135,6 +136,17 @@ static void ParseMessage(void){
 			}
 			else {
 				print("!S%d\r\n", WAAT);
+			}
+		}
+		else if(USART3_Buffers.RXBuffer[0] == '!' && USART3_Buffers.RXBuffer[1] == 'C'){ //Start-Stop ADC
+			if(USART3_Buffers.RXBuffer[2] == '1'){
+				initPeriodicADC();
+			}
+			else if(USART3_Buffers.RXBuffer[2] == '0'){
+				deInitPeriodicADC();
+			}
+			else {
+				print("!S%d\r\n", WAADC);
 			}
 		}
 		else{
