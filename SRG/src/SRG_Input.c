@@ -81,8 +81,8 @@ void EXTI4_IRQHandler(void){
 		uint32_t counter = TIM_GetCounter(TIM5);
 		TIM_SetCounter(TIM5, 0);
 		uint32_t speedRPM = TIM5_FREQ * 15 / (counter * 2);
-		print("!SSpeed in RPM: %d\r\n", speedRPM);
 		if(oldSpeed != speedRPM){
+			print("!R%d\r\n", speedRPM);
 			TIMOnePulse.Counter = counter; // update period for pulses
 			calculateTIMValues();
 			updateTimers();

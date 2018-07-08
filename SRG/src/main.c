@@ -14,6 +14,7 @@
 #include "SRG_USART.h"
 #include "SRG_Timers.h"
 #include "SRG_Input.h"
+#include "SRG_ADC.h"
 #include "LED.h"
 #include "delay.h"
 
@@ -110,6 +111,8 @@ int main(void)
 	//Speed Meter Initialization
 	SpeedCounter_Init();
 	print("!S%d\r\n", SM_INIT);
+
+	initPeriodicADC();
 
 
 	while(1){
