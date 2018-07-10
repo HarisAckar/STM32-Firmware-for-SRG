@@ -19,6 +19,23 @@ def listOfAvailableSerialPorts():
             result.append(lst)
     return result
 
+def checkReceivedMessage(received):
+    flag = False
+    filteredString = ''
+    for r in received:
+        if(chr(r) != '!' and not flag):
+            continue
+        elif(chr(r) == '!' and not flag):
+            flag = True
+            filteredString = str(chr(r))
+        elif(chr(r) != '!' and chr(r) != '\r' and flag):
+            filteredString = filteredString + str(chr(r))
+        elif(chr(r) == '\r'):
+            break
+    return filteredString
+
+
+
 def openSerialPort(serialPort, baudRate):
     listOfPorts = listOfAvailableSerialPorts()
     if len(listOfPorts) == 0:
@@ -50,7 +67,7 @@ def openSerialPort(serialPort, baudRate):
     if sp.isOpen():
         print ("Serial port: " + serialPort + ", Baud Rate: " + str(baudRate) + ":")
         listOfFiles = glob.glob("*.txt")
-        fileName = "serialdata-" + str(datetime.datetime.now().strftime("%Y-%m-%d"))
+        fileName = "serialdata-" + str(datetime.datetime.now().strftime("%Y-%m-%d") + ".txt")
         for lst in listOfFiles:
             if fileName in lst:
                 fileName = fileName + "(1)"
@@ -62,8 +79,9 @@ def openSerialPort(serialPort, baudRate):
             while sp.isOpen:
                 received = sp.readline()
                 if received and received.strip():
-                    print (received)
-                    file.write(received + "\r\n")
+                    forPrint = checkReceivedMessage(received)
+                    print (forPrint)
+                    file.write(forPrint + '\n')
         except Exception as e:
             print ("Error: " + str(e))
     else:

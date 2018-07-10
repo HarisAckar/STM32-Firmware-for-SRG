@@ -80,7 +80,6 @@ int main(void)
 
 	// USART3 Initialization
 	USART3_Init();
-	print("-----> Program is starting <-----\r\n");
 	print("!S%d\r\n", FCMI);
 	print("!S%d\r\n", USART_INIT);
 

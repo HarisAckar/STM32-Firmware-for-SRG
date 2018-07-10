@@ -134,6 +134,9 @@ static void ParseMessage(void){
 					angles.offAngle = tmp;
 				}
 			}
+			else if(USART3_Buffers.RXBuffer[2] == '?'){
+				print("!SN%dF%d\r\n", angles.onAngle, angles.offAngle);
+			}
 			else {
 				print("!S%d\r\n", WAAT);
 			}
