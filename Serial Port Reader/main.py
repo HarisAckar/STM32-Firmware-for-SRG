@@ -1,4 +1,4 @@
-# Author: Haris Ackar
+# coding: utf-8
 import sys
 import serial
 import time
@@ -22,19 +22,19 @@ def listOfAvailableSerialPorts():
 def openSerialPort(serialPort, baudRate):
     listOfPorts = listOfAvailableSerialPorts()
     if len(listOfPorts) == 0:
-        print "There is no available Serial Ports!"
+        print ("There is no available Serial Ports!")
         sys.exit()
     for lst in listOfPorts:
         if serialPort in lst[0]:
             print(lst)
             break
         else:
-            print "Serial port " + serialPort + " is not available!"
+            print ("Serial port " + serialPort + " is not available!")
             sys.exit()
     try:
         os.system("sudo chmod 666 /dev/" + serialPort)
-    except os.error, e:
-        print "Error: " + str(e)
+    except os.error as e:
+        print ("Error: " + str(e))
     sp = serial.Serial()
     sp.port = "/dev/" + serialPort
     sp.baudrate = baudRate
@@ -48,7 +48,7 @@ def openSerialPort(serialPort, baudRate):
     sp.open()
 
     if sp.isOpen():
-        print "Serial port: " + serialPort + ", Baud Rate: " + str(baudRate) + ":"
+        print ("Serial port: " + serialPort + ", Baud Rate: " + str(baudRate) + ":")
         listOfFiles = glob.glob("*.txt")
         fileName = "serialdata-" + str(datetime.datetime.now().strftime("%Y-%m-%d"))
         for lst in listOfFiles:
@@ -62,12 +62,12 @@ def openSerialPort(serialPort, baudRate):
             while sp.isOpen:
                 received = sp.readline()
                 if received and received.strip():
-                    print received
+                    print (received)
                     file.write(received + "\r\n")
-        except Exception, e:
-            print "Error: " + str(e)
+        except Exception as e:
+            print ("Error: " + str(e))
     else:
-        print "Cannot open serial port" + serialPort
+        print ("Cannot open serial port" + serialPort)
         sys.exit()
 
 def parseBaudRate(string):
@@ -75,19 +75,19 @@ def parseBaudRate(string):
         result = int(string)
         return result
     except Exception:
-        print "Invalid baud rate!"
+        print ("Invalid baud rate!")
         sys.exit(-1)
 
 def main(argv):
     serialPort = ''
     if len(argv) == 1:
-        print "Not enough input arguments"
+        print ("Not enough input arguments")
         sys.exit()
     elif len(argv) == 2:
         if argv[1] == "-h":
-            print "$main.py -i <serialPort> -i <baudRate> #for reading from Serial Port"
-            print "$main.py -l #for list of all available Serial Ports"
-            print "$main.py -h #for help"
+            print ("$main.py -i <serialPort> -i <baudRate> #for reading from Serial Port")
+            print ("$main.py -l #for list of all available Serial Ports")
+            print ("$main.py -h #for help")
             sys.exit()
         elif argv[1] == "-l":
             print(listOfAvailableSerialPorts())
@@ -97,7 +97,7 @@ def main(argv):
         baudRateINT = parseBaudRate(argv[2])
         openSerialPort(serialPort, baudRateINT)
     else:
-        print "Too many input arguments!"
+        print ("Too many input arguments!")
         sys.exit()
 
 if __name__ == "__main__":
