@@ -99,8 +99,8 @@ class serialRW:
     def setSendString(self, string):
         self.sendString = string
 
-s = serialRW("ttyUSB0", "115200")
-s.getMessage()
+#s = serialRW("ttyUSB0", "115200")
+#s.getMessage()
                     
 
     
