@@ -134,3 +134,5 @@ SRG/Debug/StdPeriph_Driver/src/stm32f4xx_lptim\.o
 \.gitignore~
 
 \.metadata/
+
+SRG/STM32F407G-DISC1\.xml
