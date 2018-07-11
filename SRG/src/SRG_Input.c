@@ -17,6 +17,10 @@
 OnePulseSettings TIMOnePulse;
 Angles angles;
 
+/**
+ * Encoder Input PA4
+ **/
+
 /***
  * External Interrupt and NVIC Initialization
  */

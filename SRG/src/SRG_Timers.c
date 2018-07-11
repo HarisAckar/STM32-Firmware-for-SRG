@@ -15,6 +15,12 @@ OnePulseSettings TIMOnePulse;
 static void initTimer(TIM_TypeDef* TIMx);
 static void updateTimer(TIM_TypeDef* TIMx);
 
+/**
+ * Timer 2 - PA1 Input, PA0 Output
+ * Timer 3 - PA7 Input, PA6 Output
+ * Timer 4 - PB7 Input, PB6 Output
+ **/
+
 /***
  * Timer 2 Initialization
  */

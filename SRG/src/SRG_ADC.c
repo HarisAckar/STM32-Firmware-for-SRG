@@ -66,6 +66,7 @@ void initPeriodicADC(void){
 void deInitPeriodicADC(void){
 	TIM_DeInit(TIM5);
 	ADC_DeInit();
+	NVIC_DisableIRQ(TIM5_IRQn);
 }
 
 void TIM5_IRQHandler(void){
