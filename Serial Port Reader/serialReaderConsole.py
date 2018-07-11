@@ -33,9 +33,7 @@ def checkReceivedMessage(received):
         elif(chr(r) == '\r'):
             break
     return filteredString
-
-
-
+    
 def openSerialPort(serialPort, baudRate):
     listOfPorts = listOfAvailableSerialPorts()
     if len(listOfPorts) == 0:
