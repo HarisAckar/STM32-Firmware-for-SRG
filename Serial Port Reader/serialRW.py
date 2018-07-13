@@ -7,28 +7,36 @@ import datetime
 import glob
 
 class serialRW:
-    def __init__(self, serialPort, baudRate):
+    def __init__(self, serialPort = None, baudRate = None):
         self.sendString = ""
         self.serialPort = serialPort
-        self.baudRate = self.parseBaudRate(baudRate)
+        self.baudRate = 0
         self.sp = serial.Serial()
+        if serialPort != None and baudRate != None:
+            self.baudRate = self.parseBaudRate(baudRate)
+            self.openPort()
+    
+    def closePort(self):
+        self.sp.close()
+    
+    def openPort(self):
         listOfPorts = self.listOfAvailableSerialPorts()
         if len(listOfPorts) == 0:
             print("There is no available Serial Ports!")
             sys.exit()
         for lst in listOfPorts:
-            if serialPort in lst[0]:
-                print(lst)
+            if self.serialPort in lst:
+                #print(lst)
                 break
             else:
-                print("Serial port " + serialPort + " is not available!")
+                print("Serial port " + self.serialPort + " is not available!")
                 sys.exit()
         try:
-            os.system("sudo chmod 666 /dev/" + serialPort)
+            os.system("sudo chmod 666 " + self.serialPort)
         except os.error as e:
             print("Error: " + str(e))
-        self.sp.port = "/dev/" + serialPort
-        self.sp.baudrate = self.parseBaudRate(baudRate)
+        self.sp.port = self.serialPort
+        self.sp.baudrate = self.parseBaudRate(self.baudRate)
         self.sp.bytesize = serial.EIGHTBITS
         self.sp.parity = serial.PARITY_NONE
         self.sp.stopbits = serial.STOPBITS_ONE
@@ -38,12 +46,13 @@ class serialRW:
         self.sp.writeTimeout = 2
         self.sp.open()
 
+
     def listOfAvailableSerialPorts(self):
-        listOfCOMPorts = serial.tools.list_ports.comports()
+        listOfCOMPorts = serial.tools.list_ports_linux.comports()
         result = []
         for lst in listOfCOMPorts:
             if "USB" in lst[0]:
-                result.append(lst)
+                result.append(lst[0])
         return result
 
     def parseBaudRate(self, string):

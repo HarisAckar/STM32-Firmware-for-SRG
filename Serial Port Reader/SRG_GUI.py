@@ -8,6 +8,7 @@
 # WARNING! All changes made in this file will be lost!
 
 from PyQt4 import QtCore, QtGui
+import serialRW as ser
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -88,11 +89,19 @@ class Ui_MainWindow(object):
         self.statusbar.setObjectName(_fromUtf8("statusbar"))
         MainWindow.setStatusBar(self.statusbar)
 
+        self.refreshButton.clicked.connect(self.refreshSerialPorts)
+        self.connectButton.clicked.connect(self.connectToSerial)
+        self.disconnectButton.clicked.connect(self.disconnectFromSerial)
+        self.baudRateList.clear()
+        baudRates = ["115200", "57600", "38400", "19200", "9600"]
+        self.baudRateList.addItems(baudRates)
+
+
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
-        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow", None))
+        MainWindow.setWindowTitle(_translate("MainWindow", "SRG GUI", None))
         self.groupBox.setTitle(_translate("MainWindow", "Serial Port Configuration", None))
         self.label.setText(_translate("MainWindow", "Choose Serial Port:", None))
         self.refreshButton.setText(_translate("MainWindow", "Refresh List", None))
@@ -108,13 +117,27 @@ class Ui_MainWindow(object):
         self.startAquisitionButton.setText(_translate("MainWindow", "Start Aquisition", None))
         self.stopAquisitionButton.setText(_translate("MainWindow", "Stop Aquisition", None))
 
+    def refreshSerialPorts(self):
+        listOfPorts = s.listOfAvailableSerialPorts()
+        self.serialPortList.clear()
+        self.serialPortList.addItems(listOfPorts)
+    
+    def connectToSerial(self):
+        s.serialPort = self.serialPortList.itemText(self.serialPortList.currentIndex())
+        s.baudRate = self.baudRateList.itemText(self.baudRateList.currentIndex())
+        s.openPort()
+
+    def disconnectFromSerial(self):
+        s.closePort()
 
 if __name__ == "__main__":
     import sys
+    s = ser.serialRW()
     app = QtGui.QApplication(sys.argv)
     MainWindow = QtGui.QMainWindow()
     ui = Ui_MainWindow()
     ui.setupUi(MainWindow)
+    ui.refreshSerialPorts()
     MainWindow.show()
     sys.exit(app.exec_())
 
