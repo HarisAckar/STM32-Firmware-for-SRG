@@ -125,7 +125,8 @@ class Ui_MainWindow(object):
     def connectToSerial(self):
         s.serialPort = self.serialPortList.itemText(self.serialPortList.currentIndex())
         s.baudRate = self.baudRateList.itemText(self.baudRateList.currentIndex())
-        s.openPort()
+        if len(s.serialPort) > 0:
+            s.openPort()
 
     def disconnectFromSerial(self):
         s.closePort()
