@@ -159,6 +159,10 @@ static void ParseMessage(void){
 	else {
 		print("!S%d\r\n", MTL);
 	}
+	uint8_t i = 0;
+	for(i = 0; i <= USART3_Buffers.RXCounter; i++){
+		USART3_Buffers.RXBuffer[i] = '\0';
+	}
 	USART3_Buffers.RXCounter = 0;
 }
 

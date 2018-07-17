@@ -96,6 +96,8 @@ class Ui_MainWindow(object):
         baudRates = ["115200", "57600", "38400", "19200", "9600"]
         self.baudRateList.addItems(baudRates)
 
+        self.getAnglesButton.clicked.connect(self.parseAngles)
+
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
@@ -127,6 +129,32 @@ class Ui_MainWindow(object):
         s.baudRate = self.baudRateList.itemText(self.baudRateList.currentIndex())
         if len(s.serialPort) > 0:
             s.openPort()
+            """
+            msgBox = QtGui.QMessageBox(self)
+            msgBox.setIcon(QtGui.QMessageBox.Information)
+            msgBox.setText("Connection sucessful")
+            msgBox.setInformativeText("Do you want to reset target?")
+            msgBox.addButton(QtGui.QMessageBox.Yes)
+            msgBox.addButton(QtGui.QMessageBox.No)
+            msgBox.setDefaultButton(QtGui.QMessageBox.Yes)
+            ret = msgBox.exec_()
+            if ret == QtGui.QMessageBox.Yes:
+                s.sendString("!SR\r\n") #software reset of mcu
+            else:
+                return
+            """
+        else:
+            print("noserial")
+
+    def parseAngles(self):
+        if s.isOpen():
+            s.setSendString("!A?")
+            angles = s.getMessage()
+            onAngle = angles[3] + angles[4]
+            offAngle = angles[6] + angles[7]
+            self.onAngleInput.setText(onAngle)
+            self.onAngleInput_2.setText(offAngle)
+
 
     def disconnectFromSerial(self):
         s.closePort()
@@ -141,4 +169,11 @@ if __name__ == "__main__":
     ui.refreshSerialPorts()
     MainWindow.show()
     sys.exit(app.exec_())
+
+    """
+    TODO:
+i get-ati uglove odnosno kada ih vrati parsirati uglove
+nakon toga startati akviziciju
+    """
+    
 

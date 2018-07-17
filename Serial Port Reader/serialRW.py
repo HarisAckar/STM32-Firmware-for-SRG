@@ -45,6 +45,14 @@ class serialRW:
         self.sp.dsrdtr = False
         self.sp.writeTimeout = 2
         self.sp.open()
+        if self.sp.isOpen():
+            listOfFiles = glob.glob("*.txt")
+            fileName = "serialData-" + str(datetime.datetime.now().strftime("%Y-%m-%d"))
+            for lst in listOfFiles:
+                if fileName in lst:
+                    fileName = fileName + "(1)"
+            fileName = fileName + ".txt"
+            self.file = open(fileName, "a")
 
 
     def listOfAvailableSerialPorts(self):
@@ -80,33 +88,29 @@ class serialRW:
     
     def getMessage(self):
         if self.sp.isOpen():
-            listOfFiles = glob.glob("*.txt")
-            fileName = "serialData-" + str(datetime.datetime.now().strftime("%Y-%m-%d"))
-            for lst in listOfFiles:
-                if fileName in lst:
-                    fileName = fileName + "(1)"
-            fileName = fileName + ".txt"
-            file = open(fileName, "a")
             try:
                 self.sp.flushInput()
                 self.sp.flushOutput()
-                time.sleep(0.5)
-                while self.sp.isOpen:
-                    received = self.sp.readline()
-                    if received and received.strip():
-                        forPrint = self.checkReceivedMessage(received)
-                        file.write(forPrint + "\n")
-                    if len(self.sendString) > 0:
-                        self.sp.write(self.sendString + "\r\n")
-                        self.sendString = ""
+                received = self.sp.readline()
+                if received and received.strip():
+                    forPrint = self.checkReceivedMessage(received)
+                    self.file.write(forPrint + "\n")
+                    return forPrint
             except Exception as e:
                 print ("Error: " + str(e))
         else:
             print("Cannot open serial port: " + self.serialPort)
             sys.exit()
+        
+    def isOpen(self):
+        return self.sp.isOpen()
     
     def setSendString(self, string):
-        self.sendString = string
+        self.sp.flushInput()
+        self.sp.flushOutput()
+        if len(string) > 0:
+            sendString = string + "\r"
+            self.sp.write(sendString.encode())
 
 #s = serialRW("ttyUSB0", "115200")
 #s.getMessage()
