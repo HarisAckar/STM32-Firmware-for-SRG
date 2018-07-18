@@ -172,8 +172,8 @@ if __name__ == "__main__":
 
     """
     TODO:
-i get-ati uglove odnosno kada ih vrati parsirati uglove
-nakon toga startati akviziciju
+-set-anje uglova 
+startanje akvizicije
     """
     
 
