@@ -88,17 +88,16 @@ class Ui_MainWindow(object):
         self.statusbar = QtGui.QStatusBar(MainWindow)
         self.statusbar.setObjectName(_fromUtf8("statusbar"))
         MainWindow.setStatusBar(self.statusbar)
-
         self.refreshButton.clicked.connect(self.refreshSerialPorts)
         self.connectButton.clicked.connect(self.connectToSerial)
         self.disconnectButton.clicked.connect(self.disconnectFromSerial)
         self.baudRateList.clear()
         baudRates = ["115200", "57600", "38400", "19200", "9600"]
         self.baudRateList.addItems(baudRates)
-
         self.getAnglesButton.clicked.connect(self.parseAngles)
-
-
+        self.setAnglesButton.clicked.connect(self.setAngles)
+        self.startAquisitionButton.clicked.connect(self.startAquisition)
+        self.stopAquisitionButton.clicked.connect(self.stopAquisition)
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
@@ -154,7 +153,37 @@ class Ui_MainWindow(object):
             offAngle = angles[6] + angles[7]
             self.onAngleInput.setText(onAngle)
             self.onAngleInput_2.setText(offAngle)
+    
+    def testInputAngles(self, onAngle, offAngle):
+        try:
+            on = float(onAngle)
+            off = float(offAngle)
+            if on >= -22.5 and on <= 22.5 and off >= -22.5 and off <= 22.5:
+                return True
+            else:
+                return False
+        except Exception:
+            return False
 
+    def setAngles(self):
+        if s.isOpen():
+            onAngle = self.onAngleInput.text()
+            offAngle = self.onAngleInput_2.text()
+            if testInputAngles(onAngle, offAngle):
+                on = float(onAngle) + 22.5
+                off = float(offAngle) + 22.5
+                onAngle = str(on)
+                offAngle = str(off)
+                s.setSendString("!AN" + onAngle)
+                s.setSendString("!AF" + offAngle)
+
+    def startAquisition(self):
+        if s.isOpen():
+            s.setSendString("!C1")
+    
+    def stopAquisition(self):
+        if s.isOpen():
+            s.setSendString("!C0")
 
     def disconnectFromSerial(self):
         s.closePort()
@@ -172,7 +201,6 @@ if __name__ == "__main__":
 
     """
     TODO:
--set-anje uglova 
 startanje akvizicije
     """
     

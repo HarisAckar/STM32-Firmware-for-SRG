@@ -112,8 +112,7 @@ class serialRW:
             sendString = string + "\r"
             self.sp.write(sendString.encode())
 
-#s = serialRW("ttyUSB0", "115200")
-#s.getMessage()
+
                     
 
     
