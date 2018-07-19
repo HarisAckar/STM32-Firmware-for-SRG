@@ -201,7 +201,9 @@ if __name__ == "__main__":
 
     """
     TODO:
-startanje akvizicije
+    -test angle setting
+    -test aquisition
+    -finish application
     """
     
 
