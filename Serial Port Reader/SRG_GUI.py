@@ -9,6 +9,7 @@
 
 from PyQt4 import QtCore, QtGui
 import serialRW as ser
+import time
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -175,15 +176,20 @@ class Ui_MainWindow(object):
                 onAngle = str(on)
                 offAngle = str(off)
                 s.setSendString("!AN" + onAngle)
+                time.sleep(0.1)
                 s.setSendString("!AF" + offAngle)
 
     def startAquisition(self):
         if s.isOpen():
             s.setSendString("!C1")
+            #parse messages
+            #set flag for aquisition
+            #plot speed and voltage
     
     def stopAquisition(self):
         if s.isOpen():
             s.setSendString("!C0")
+            #stop flag for aquisition
 
     def disconnectFromSerial(self):
         s.closePort()
