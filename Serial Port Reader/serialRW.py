@@ -90,7 +90,6 @@ class serialRW:
         if self.sp.isOpen():
             try:
                 self.sp.flushInput()
-                self.sp.flushOutput()
                 received = self.sp.readline()
                 if received and received.strip():
                     forPrint = self.checkReceivedMessage(received)

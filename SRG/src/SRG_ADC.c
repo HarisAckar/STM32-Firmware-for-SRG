@@ -26,7 +26,7 @@ void initPeriodicADC(void){
 	TIM_TimeBaseInitTypeDef TIM_InitStruct;
 	NVIC_InitTypeDef NVIC_InitStruct;
 
-	TIM_InitStruct.TIM_Prescaler = 10;
+	TIM_InitStruct.TIM_Prescaler = 40;
 	TIM_InitStruct.TIM_CounterMode = TIM_CounterMode_Up;
 	TIM_InitStruct.TIM_Period = 1680;
 	TIM_InitStruct.TIM_ClockDivision = TIM_CKD_DIV1;
@@ -73,7 +73,7 @@ void TIM5_IRQHandler(void){
 		uint8_t adcValue = 0;
 		while(ADC_GetSoftwareStartConvStatus(ADC1) != RESET);
 		adcValue = ADC_GetConversionValue(ADC1);
-		print("!V%d\r\n", adcValue);
+		print("!%d\r\n", adcValue);
 		TIM_ClearITPendingBit(TIM5, TIM_IT_Update);
 	}
 }

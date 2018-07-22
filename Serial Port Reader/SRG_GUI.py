@@ -10,6 +10,10 @@
 from PyQt4 import QtCore, QtGui
 import serialRW as ser
 import time
+from matplotlib import pyplot
+from matplotlib import animation
+import SRG_Threads
+
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -129,37 +133,38 @@ class Ui_MainWindow(object):
         s.baudRate = self.baudRateList.itemText(self.baudRateList.currentIndex())
         if len(s.serialPort) > 0:
             s.openPort()
-            """
-            msgBox = QtGui.QMessageBox(self)
-            msgBox.setIcon(QtGui.QMessageBox.Information)
-            msgBox.setText("Connection sucessful")
-            msgBox.setInformativeText("Do you want to reset target?")
-            msgBox.addButton(QtGui.QMessageBox.Yes)
-            msgBox.addButton(QtGui.QMessageBox.No)
-            msgBox.setDefaultButton(QtGui.QMessageBox.Yes)
-            ret = msgBox.exec_()
-            if ret == QtGui.QMessageBox.Yes:
-                s.sendString("!SR\r\n") #software reset of mcu
-            else:
-                return
-            """
-        else:
-            print("noserial")
 
     def parseAngles(self):
         if s.isOpen():
             s.setSendString("!A?")
             angles = s.getMessage()
-            onAngle = angles[3] + angles[4]
-            offAngle = angles[6] + angles[7]
+            print(angles)
+            onAngle = ""
+            offAngle = ""
+            if len(angles) == 8:
+                onAngle = angles[3] + angles[4]
+                offAngle = angles[6] + angles[7]
+            elif len(angles) == 7:
+                if angles[4] != 'F':
+                    onAngle = angles[3] + angles[4]
+                    offAngle = angles[6]
+                else:
+                    onAngle = angles[3]
+                    offAngle = angles[5] + angles[6]
+            elif len(angles) == 6:
+                onAngle = angles[3]
+                offAngle = angles[5]
+            else:
+                print("Error in received message!")
+                
             self.onAngleInput.setText(onAngle)
             self.onAngleInput_2.setText(offAngle)
     
     def testInputAngles(self, onAngle, offAngle):
         try:
-            on = float(onAngle)
-            off = float(offAngle)
-            if on >= -22.5 and on <= 22.5 and off >= -22.5 and off <= 22.5:
+            on = int(onAngle)
+            off = int(offAngle)
+            if on >= 0 and on <= 45 and off >= 0 and off <= 45:
                 return True
             else:
                 return False
@@ -170,26 +175,22 @@ class Ui_MainWindow(object):
         if s.isOpen():
             onAngle = self.onAngleInput.text()
             offAngle = self.onAngleInput_2.text()
-            if testInputAngles(onAngle, offAngle):
-                on = float(onAngle) + 22.5
-                off = float(offAngle) + 22.5
-                onAngle = str(on)
-                offAngle = str(off)
+            if self.testInputAngles(onAngle, offAngle):
                 s.setSendString("!AN" + onAngle)
                 time.sleep(0.1)
                 s.setSendString("!AF" + offAngle)
-
+            
     def startAquisition(self):
         if s.isOpen():
             s.setSendString("!C1")
-            #parse messages
-            #set flag for aquisition
-            #plot speed and voltage
+            thread1.start()
+
     
     def stopAquisition(self):
+        thread1.dead = True
+        thread1.join()
         if s.isOpen():
             s.setSendString("!C0")
-            #stop flag for aquisition
 
     def disconnectFromSerial(self):
         s.closePort()
@@ -197,6 +198,7 @@ class Ui_MainWindow(object):
 if __name__ == "__main__":
     import sys
     s = ser.serialRW()
+    thread1 = SRG_Threads.srgThread(1, "Thread-1", s)
     app = QtGui.QApplication(sys.argv)
     MainWindow = QtGui.QMainWindow()
     ui = Ui_MainWindow()
@@ -207,8 +209,7 @@ if __name__ == "__main__":
 
     """
     TODO:
-    -test angle setting
-    -test aquisition
+    -change data between two threads
     -finish application
     """
     
