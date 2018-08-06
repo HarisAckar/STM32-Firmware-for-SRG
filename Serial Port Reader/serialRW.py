@@ -3,8 +3,6 @@ import serial
 import time
 import os
 import serial.tools.list_ports
-import datetime
-import glob
 
 class serialRW:
     def __init__(self, serialPort = None, baudRate = None):
@@ -45,15 +43,6 @@ class serialRW:
         self.sp.dsrdtr = False
         self.sp.writeTimeout = 2
         self.sp.open()
-        if self.sp.isOpen():
-            listOfFiles = glob.glob("*.txt")
-            fileName = "serialData-" + str(datetime.datetime.now().strftime("%Y-%m-%d"))
-            for lst in listOfFiles:
-                if fileName in lst:
-                    fileName = fileName + "(1)"
-            fileName = fileName + ".txt"
-            self.file = open(fileName, "a")
-
 
     def listOfAvailableSerialPorts(self):
         listOfCOMPorts = serial.tools.list_ports_linux.comports()
@@ -93,7 +82,6 @@ class serialRW:
                 received = self.sp.readline()
                 if received and received.strip():
                     forPrint = self.checkReceivedMessage(received)
-                    self.file.write(forPrint + "\n")
                     return forPrint
             except Exception as e:
                 print ("Error: " + str(e))

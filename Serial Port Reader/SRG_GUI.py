@@ -10,8 +10,6 @@
 from PyQt4 import QtCore, QtGui
 import serialRW as ser
 import time
-from matplotlib import pyplot
-from matplotlib import animation
 import SRG_Threads
 
 
@@ -103,6 +101,7 @@ class Ui_MainWindow(object):
         self.setAnglesButton.clicked.connect(self.setAngles)
         self.startAquisitionButton.clicked.connect(self.startAquisition)
         self.stopAquisitionButton.clicked.connect(self.stopAquisition)
+
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
@@ -184,11 +183,14 @@ class Ui_MainWindow(object):
         if s.isOpen():
             s.setSendString("!C1")
             thread1.start()
+            thread2.start()
 
     
     def stopAquisition(self):
         thread1.dead = True
+        thread2.dead = True
         thread1.join()
+        thread2.join()
         if s.isOpen():
             s.setSendString("!C0")
 
@@ -198,7 +200,8 @@ class Ui_MainWindow(object):
 if __name__ == "__main__":
     import sys
     s = ser.serialRW()
-    thread1 = SRG_Threads.srgThread(1, "Thread-1", s)
+    thread1 = SRG_Threads.Aquisition(1, "SerialReader", s)
+    thread2 = SRG_Threads.LivePlot(2, "LivePlot")
     app = QtGui.QApplication(sys.argv)
     MainWindow = QtGui.QMainWindow()
     ui = Ui_MainWindow()
@@ -209,7 +212,6 @@ if __name__ == "__main__":
 
     """
     TODO:
-    -change data between two threads
     -finish application
     """
     
